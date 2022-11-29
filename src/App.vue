@@ -1,16 +1,32 @@
 <template>
-  <div id="app">
+  <section id="app">
     <h1>Movie Challenge</h1>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui commodi explicabo rerum dicta similique, facilis odit sit neque! Consectetur, sit voluptates. Nobis aliquam aut fuga, iure recusandae quia pariatur at. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam perferendis non a, laboriosam id dolor fuga amet voluptatem quo, dolorem optio nam nesciunt. Tempore nostrum libero iusto earum quia cumque?</p>
-    <button>More</button>
-    <span id="btn"></span>
-  </div>
+      <div class="movies">
+        <div v-for="movie, i in movies" :key="i" class="movie">
+          <p>{{ movie.title }}</p>
+          <img src="https://image.tmdb.org/t/p/w500/od22ftNnyag0TTxcnJhlsu3aLoU.jpg" />
+        </div>
+      </div>
+  </section>
 </template>
 
 <script>
-export default {
+import { onMounted, defineComponent, ref } from "vue";
+import api from "./services/api.js";
+
+export default defineComponent({
   name: 'App',
-}
+  setup(){
+    const movies = ref([]);
+    const fetchMovies = () => api.get("/movie/top_rated?api_key=c32b068fe2d47f0561851d0df1792423&language=en-US&page=1")
+      .then((resp) => {
+        console.log(resp);
+        movies.value = resp.data.results
+      });
+    onMounted(fetchMovies);
+    return { movies }
+  }
+});
 </script>
 
 <style>
@@ -26,5 +42,27 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 2rem;
+}
+
+.movies {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.movie {
+  width: 12rem;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+img {
+  width: 68%;
+  border-radius: 0.6rem;
 }
 </style>
