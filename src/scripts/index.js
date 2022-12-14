@@ -1,4 +1,4 @@
 
-export const test = () => {
-  return console.log('função de teste');
+export const test = (filmName) => {
+  return console.log(filmName);
 };

@@ -2,26 +2,29 @@
   <section id="app">
     <h1>Movie Challenge</h1>
     <h4>Top Filmes by themoviedb</h4>
-      <select v-model="selected" class="order-select">
+      <!--<select v-model="selected" class="order-select">
         <option>Ascending</option>
         <option>Descending</option>
-      </select>
+      </select>-->
       <section class="movies">
-        <div v-for="movie, i in movies" :key="i" class="movie">
+        <div v-for="movie, i in movies" :key="i" class="movie" id="movie">
           <h3>{{ movie.title }}</h3>
           <div class="cover" id="cover">
-            <img v-bind:src="`https://image.tmdb.org/t/p/w500${ movie.poster_path }`" v-on:click="doSomething"/>
+            <img v-bind:src="`https://image.tmdb.org/t/p/w500${ movie.poster_path }`" v-on:mouseenter="show = true" v-on:mouseout="show = false" />
             <p>{{ movie.release_date }}</p>
           </div>
+          <transition name="fade">
+            <div v-if="show" class="overview">{{ movie.overview }}</div>
+          </transition>
         </div>
       </section>
   </section>
 </template>
 
 <script>
-import { onMounted, defineComponent, ref } from "vue";
+import { onMounted, defineComponent, ref, nextTick } from "vue";
 import api from "./services/api.js";
-// import { test } from "./scripts/index.js"
+import { test } from "./scripts/index.js"
 
 export default defineComponent({
   name: 'App',
@@ -35,8 +38,23 @@ export default defineComponent({
     onMounted(fetchMovies);
     return { movies }
   },
-  
+
+  el: 'movie',
+  data(){
+    return{
+      show: false
+    }
+  },
+
+  methods: {
+    async increment() {
+      await nextTick()
+      test()
+    }
+  }
+
 });
+
 </script>
 
 <style>
@@ -57,6 +75,7 @@ export default defineComponent({
 }
 
 .order-select {
+  font-family: 'Poppins', sans-serif;
   margin-top: 1rem;
   padding: 0.2rem;
   border: none;
@@ -79,7 +98,7 @@ export default defineComponent({
 
 .movie {
   width: 12rem;
-  height: 18rem;
+  /* height: 18rem; */
   margin: 1rem;
   display: flex;
   flex-direction: column;
@@ -90,6 +109,7 @@ export default defineComponent({
 
 .cover {
   width: 100%;
+  cursor: pointer;
 }
 
 .cover p {
@@ -99,5 +119,26 @@ export default defineComponent({
 .cover img {
   width: 68%;
   border-radius: 0.6rem;
+}
+
+.overview {
+  font-size: 0.8rem;
+  text-align: left;
+  position: relative;
+}
+
+.fade-enter-active {
+  transition: all .3s ease;
+}
+
+.fade-leave-active {
+  transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.fade-enter,
+.fade-leave-to
+  {
+  transform: translateY(-30px);
+  opacity: 0;
 }
 </style>
