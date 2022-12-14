@@ -1,10 +1,11 @@
 <template>
   <section id="app">
     <h1>Movie Challenge</h1>
+    <h4>Top Filmes by themoviedb</h4>
       <div class="movies">
         <div v-for="movie, i in movies" :key="i" class="movie">
           <p>{{ movie.title }}</p>
-          <img src="https://image.tmdb.org/t/p/w500/od22ftNnyag0TTxcnJhlsu3aLoU.jpg" />
+          <img v-bind:src="`https://image.tmdb.org/t/p/w500/${ movie.poster_path }`" />
         </div>
       </div>
   </section>
